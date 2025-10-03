@@ -1,6 +1,119 @@
-This is Zhiyuan Li👀
-bybyby
-# Hello World
-# Welcome to my website
-# This is my first website
-# I am learning web development
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Zhiyuan Li 👀</title>
+	<!-- Google Fonts: Revalia for cute slab-serif style -->
+	<link href="https://fonts.googleapis.com/css2?family=Revalia&display=swap" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'Revalia', 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+			background: linear-gradient(135deg, #fff700 0%, #ffe259 100%);
+			color: #222;
+			margin: 0;
+			padding: 0;
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: flex-start;
+		}
+		h1 {
+			margin: 0.5em 0;
+			color: #fff;
+			text-shadow: 2px 2px 8px #ffe259;
+			font-family: 'Revalia', 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+			letter-spacing: 2px;
+		}
+		.byline {
+			font-size: 1.2rem;
+			margin: 1em 0 2em 0;
+			color: #fffbe7;
+			letter-spacing: 2px;
+			font-family: 'Revalia', 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+		}
+		#score {
+			font-size: 1.3rem;
+			color: #fff;
+			margin-bottom: 1em;
+			font-family: 'Revalia', 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+		}
+		#instructions {
+			color: #fffbe7;
+			margin-bottom: 0.5em;
+			font-family: 'Revalia', 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+		}
+		#game-area {
+			position: relative;
+			width: 500px;
+			height: 350px;
+			background: rgba(255,255,200,0.2);
+			border-radius: 20px;
+			margin: 2em 0;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(255,231,89,0.2);
+			border: 2px solid #fff;
+		}
+		.flower {
+			position: absolute;
+			width: 48px;
+			height: 48px;
+			cursor: pointer;
+			transition: transform 0.1s;
+			will-change: transform;
+			z-index: 2;
+			filter: drop-shadow(0 2px 6px #ffe259cc);
+		}
+		.flower:active {
+			transform: scale(0.8) rotate(-10deg);
+		}
+	</style>
+</head>
+<body>
+	<div class="byline">This is Zhiyuan Li <span>👀</span></div>
+	<h1>Welcome to my website</h1>
+	<div id="instructions">Click as many flowers as you can!</div>
+	<div id="score">Score: 0</div>
+	<div id="game-area"></div>
+	<script>
+		const gameArea = document.getElementById('game-area');
+		const scoreDisplay = document.getElementById('score');
+		let score = 0;
+		const flowerSVGs = [
+			`<svg class="flower" viewBox="0 0 48 48"><circle cx="24" cy="24" r="8" fill="#FFD700"/><g><ellipse cx="24" cy="10" rx="6" ry="10" fill="#FF69B4"/><ellipse cx="24" cy="38" rx="6" ry="10" fill="#FF69B4"/><ellipse cx="10" cy="24" rx="10" ry="6" fill="#FF69B4"/><ellipse cx="38" cy="24" rx="10" ry="6" fill="#FF69B4"/><ellipse cx="14" cy="14" rx="6" ry="10" transform="rotate(-45 14 14)" fill="#FFB347"/><ellipse cx="34" cy="34" rx="6" ry="10" transform="rotate(-45 34 34)" fill="#FFB347"/><ellipse cx="34" cy="14" rx="6" ry="10" transform="rotate(45 34 14)" fill="#FFB347"/><ellipse cx="14" cy="34" rx="6" ry="10" transform="rotate(45 14 34)" fill="#FFB347"/></g></svg>`,
+			`<svg class="flower" viewBox="0 0 48 48"><circle cx="24" cy="24" r="7" fill="#FFB6C1"/><g><ellipse cx="24" cy="8" rx="5" ry="9" fill="#8FBC8F"/><ellipse cx="24" cy="40" rx="5" ry="9" fill="#8FBC8F"/><ellipse cx="8" cy="24" rx="9" ry="5" fill="#8FBC8F"/><ellipse cx="40" cy="24" rx="9" ry="5" fill="#8FBC8F"/><ellipse cx="14" cy="14" rx="5" ry="9" transform="rotate(-45 14 14)" fill="#E9967A"/><ellipse cx="34" cy="34" rx="5" ry="9" transform="rotate(-45 34 34)" fill="#E9967A"/><ellipse cx="34" cy="14" rx="5" ry="9" transform="rotate(45 34 14)" fill="#E9967A"/><ellipse cx="14" cy="34" rx="5" ry="9" transform="rotate(45 14 34)" fill="#E9967A"/></g></svg>`,
+			`<svg class="flower" viewBox="0 0 48 48"><circle cx="24" cy="24" r="6" fill="#FFFACD"/><g><ellipse cx="24" cy="7" rx="4" ry="8" fill="#BA55D3"/><ellipse cx="24" cy="41" rx="4" ry="8" fill="#BA55D3"/><ellipse cx="7" cy="24" rx="8" ry="4" fill="#BA55D3"/><ellipse cx="41" cy="24" rx="8" ry="4" fill="#BA55D3"/><ellipse cx="14" cy="14" rx="4" ry="8" transform="rotate(-45 14 14)" fill="#40E0D0"/><ellipse cx="34" cy="34" rx="4" ry="8" transform="rotate(-45 34 34)" fill="#40E0D0"/><ellipse cx="34" cy="14" rx="4" ry="8" transform="rotate(45 34 14)" fill="#40E0D0"/><ellipse cx="14" cy="34" rx="4" ry="8" transform="rotate(45 14 34)" fill="#40E0D0"/></g></svg>`
+		];
+
+		function randomFlowerSVG() {
+			return flowerSVGs[Math.floor(Math.random() * flowerSVGs.length)];
+		}
+
+		function spawnFlower() {
+			const flower = document.createElement('div');
+			flower.innerHTML = randomFlowerSVG();
+			const flowerElem = flower.firstChild;
+			const size = 48;
+			const maxLeft = gameArea.clientWidth - size;
+			const maxTop = gameArea.clientHeight - size;
+			const left = Math.random() * maxLeft;
+			const top = Math.random() * maxTop;
+			flowerElem.style.left = left + 'px';
+			flowerElem.style.top = top + 'px';
+			flowerElem.addEventListener('click', (e) => {
+				e.stopPropagation();
+				score++;
+				scoreDisplay.textContent = 'Score: ' + score;
+				flowerElem.remove();
+				spawnFlower();
+			});
+			gameArea.appendChild(flowerElem);
+		}
+
+		// Spawn many flowers at start
+		for (let i = 0; i < 8; i++) {
+			setTimeout(spawnFlower, i * 200);
+		}
+	</script>
+</body>
+</html>
